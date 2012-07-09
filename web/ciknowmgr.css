@@ -1,0 +1,74 @@
+body
+{
+  background-color: white;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 10pt;
+  text-align: left;
+}
+
+a:link { 
+	font-size:10px;
+	color: #0000FF;
+	text-decoration:none;
+}
+a:visited { 
+	font-size:10px;
+	color: #0000FF; 
+	text-decoration:none;
+}
+a:hover { 
+	font-size:10px;
+	color: #0000FF;
+	text-decoration:underline;
+}
+a:active { 
+	font-size:10px;
+	color: #0000FF;
+	text-decoration:underline;
+}
+
+.form
+{
+  background-color: #F5F5DC;
+  border-style: solid;
+  border-width: 2;
+  text-align: center;
+  margin: auto; /* firefox need this to center the table */
+}
+
+.left{
+	text-align: left	
+}
+
+.right{
+	text-align: right;
+}
+
+.header
+{
+	background-color: purple;
+	color: white;
+	font-weight: bold;
+}
+
+.error{
+	font-size:10px;
+	color:red;
+}
+
+.notice{
+	font-weight: bold;	
+	color: red;
+}
+
+.msg {
+	color:red;
+}
+
+.even{
+	background-color: white;	
+}
+
+.odd{
+	background-color: #F5F5DC;	
+}

@@ -1,0 +1,21 @@
+<zk>
+	<caption id="caption" label="Create New Project"/>
+	<grid vflex="min" width="600px">
+		<columns>
+			<column width="80px"/>
+			<column width="520px"/>
+		</columns>
+		<rows>
+			<row>
+				Name<textbox id="nameBox" constraint="no empty" width="100%"/>
+			</row>		
+			<row>
+				Description<textbox id="descriptionBox" constraint="no empty" width="100%"/>
+			</row>
+		</rows>
+	</grid>
+	<toolbar>
+		<toolbarbutton id="createBtn" label="Create" autodisable="createBtn, cancelBtn"/>
+		<toolbarbutton id="cancelBtn" label="Cancel" autodisable="createBtn, cancelBtn"/>
+	</toolbar>	
+</zk>

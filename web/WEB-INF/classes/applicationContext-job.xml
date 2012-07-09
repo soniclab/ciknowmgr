@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"     
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- remove default-autowire="byName" from <beans> tag because it caused problem for Quartz Scheduler -->
+
+    <!---															-->
+	<!--- 					CRON JOBS	      						-->
+	<!---															--> 
+	<bean id="ciknowDetector" class="ciknowmgr.job.CIKNOWDetector">
+		<property name="projectDao" ref="projectDao"/>
+		<property name="userDao" ref="userDao"/>
+		<property name="managerUtil" ref="managerUtil"/>
+	</bean>
+	
+	<bean id="ciknowDetectorJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="ciknowDetector" />
+		<property name="targetMethod" value="detect" />
+		<property name="concurrent" value="true" />
+	</bean>
+		   
+	<bean id="ciknowDetectionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="ciknowDetectorJob"/>
+		
+		<!-- every Saturday 
+		<property name="cronExpression" value="0 0 0 ? * SAT"/>	
+		-->
+		
+		<!-- every minute 
+		<property name="cronExpression" value="0 * * * * ?"/>
+		-->
+		
+		<!-- 3:00am every day -->
+		<property name="cronExpression" value="0 0 3 * * ?"/>				
+	</bean>	
+		
+		
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+		<property name="triggers">
+			<list>
+				<ref bean="ciknowDetectionTrigger"/>
+			</list>
+		</property>
+	</bean>
+		    
+</beans>

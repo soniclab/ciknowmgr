@@ -1,0 +1,8 @@
+<zk>
+	<caption id="caption" label="Edit Instruction"/>
+	<ckeditor id="editorBox" width="98%" height="332px" customConfigurationsPath="/js/ckconfig.js"/>
+	<toolbar>
+		<toolbarbutton id="saveBtn" label="Save" autodisable="saveBtn, cancelBtn"/>
+		<toolbarbutton id="cancelBtn" label="Cancel" autodisable="saveBtn, cancelBtn"/>
+	</toolbar>	
+</zk>

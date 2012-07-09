@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- myMXMLCBuild.xml -->
+<project name="CIKNOW Manager - Internal" basedir="." default="create">
+    <property file="build.properties"/>
+    <property environment="env"/>
+    <property name="template.dir" value="${basedir}/template"/>
+    <property name="template.server" value="${template.dir}/server"/>
+	<property name="template.client" value="${template.dir}/client"/>
+    <property name="template.temp" value="${template.dir}/temp"/>
+    <property name="deploy.dir" value="${env.CATALINA_HOME}/webapps/${context}"/>
+    <property name="manager.url" value="http://127.0.0.1:8080/manager"/>
+    <property name="manager.username" value="admin"/>
+    <property name="manager.password" value="northwestern"/>
+	
+    <path id="compile.classpath">
+        <fileset dir="${env.CATALINA_HOME}/bin">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="${env.CATALINA_HOME}/lib"/>
+        <fileset dir="${env.CATALINA_HOME}/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${basedir}/lib">
+            <include name="**/*.jar"/>
+        </fileset>		
+    </path>
+	
+    <path id="classpath">
+        <path refid="compile.classpath"/>
+        <pathelement location="${basedir}/classes"/>
+    </path>
+			
+    <taskdef resource="org/apache/catalina/ant/catalina.tasks"
+                 classpathref="compile.classpath"/>
+		
+    <tstamp>
+        <format property="start.timestamp" pattern="MM/dd/yyyy HH:mm:ss" timezone="America/Chicago"/>
+    </tstamp>
+	
+    <target name="init">
+        <echo>${start.timestamp}</echo>
+    </target>
+	
+    <!-- ================================= 
+        target: restart              
+        ================================= -->
+    <target name="restart" description="--> restart project">
+        <reload url="${manager.url}"
+                username="${manager.username}"
+                password="${manager.password}"
+                path="/${context}"/>
+    </target>
+    	
+    <!-- ================================= 
+        target: create              
+        ================================= -->
+    <target name="create" description="--> create new project">
+        <antcall target="init"/>
+        <antcall target="db-init"/>
+        <antcall target="create-server"/>
+		<antcall target="create-client"/>
+		
+        <deploy url="${manager.url}"
+                username="${manager.username}"
+                password="${manager.password}"
+                path="/${context}"
+                localWar="${template.temp}"/>
+    </target>
+
+    <!-- ================================= 
+        target: copy             
+        ================================= -->	
+    <target name="copy" depends="create" description="--> copy existing project">
+        <sql driver="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://127.0.0.1/${context}"
+            userid="sonic"
+            password="sonic">
+			
+            <classpath>
+                <pathelement location="${basedir}/lib/mysql-connector-java-3.1.12-bin.jar"/>
+            </classpath>
+
+            <transaction src="${basedir}/sql/${oldContext}.sql"/>
+        </sql>	
+        <delete file="${basedir}/sql/${oldContext}.sql"/>
+    </target>	
+				
+    <!-- ================================= 
+        target: update             
+        ================================= -->	
+    <target name="update" description="--> update existing project">
+        <antcall target="init"/>
+        <antcall target="db-update"/>
+        <antcall target="create-server"/>
+    	<antcall target="create-client"/>
+    	
+    	<!-- reserve previous configuration -->    	
+        <copy toDir="${template.temp}/WEB-INF/classes" file="${deploy.dir}/WEB-INF/classes/ciknow.xml" overwrite="true"/>
+        <copy toDir="${template.temp}/WEB-INF/classes" file="${deploy.dir}/WEB-INF/classes/template.vm" overwrite="true"/>
+        <copy toDir="${template.temp}/images" overwrite="true">
+            <fileset dir="${deploy.dir}/images"/>
+        </copy>    	
+    	
+    	<!-- stop the application to make absolutely sure the following deploy task will succeed! -->
+        <stop url="${manager.url}"
+              username="${manager.username}"
+              password="${manager.password}"
+              path="/${context}"/>
+    	
+        <deploy url="${manager.url}"
+                username="${manager.username}"
+                password="${manager.password}"
+                path="/${context}"
+                update="true"
+                localWar="${template.temp}"/>    
+    </target>	
+			
+    <!-- ================================= 
+        target: clean            
+        ================================= -->
+    <target name="clean" description="--> clean existing project">
+        <stop url="${manager.url}"
+              username="${manager.username}"
+              password="${manager.password}"
+              path="/${context}"/>
+
+        <antcall target="init"/>
+        <antcall target="db-init"/>
+    	
+        <start url="${manager.url}"
+               username="${manager.username}"
+               password="${manager.password}"
+               path="/${context}"/>    	
+    </target>
+    	
+    <!-- ================================= 
+        target: delete             
+        ================================= -->	
+    <target name="delete" description="--> delete existing project">    	
+        <undeploy url="${manager.url}"
+                  username="${manager.username}"
+                  password="${manager.password}"
+                  path="/${context}" />   
+        <antcall target="db-delete"/>
+    </target>
+	
+
+	
+    <!-- ================================= 
+        target: disable             
+        ================================= -->	
+    <target name="disable" description="--> disable existing project">
+        <copy toDir="${basedir}/../../../disabled/${context}">
+            <fileset dir="${deploy.dir}"/>
+        </copy>
+        <undeploy url="${manager.url}"
+                  username="${manager.username}"
+                  password="${manager.password}"
+                  path="/${context}"/>    	
+    </target>
+    		
+    <!-- ================================= 
+        target: enable             
+        ================================= -->	
+    <target name="enable" description="--> enable existing project">
+        <deploy url="${manager.url}"
+                username="${manager.username}"
+                password="${manager.password}"
+                path="/${context}"
+                localWar="${basedir}/../../../disabled/${context}"/>   
+        <delete dir="${basedir}/../../../disabled/${context}" quiet="false" failonerror="false"/>
+    </target>
+        	
+        	
+    <!--  DATABASE  -->
+    <target name="db-create">
+        <sql driver="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://127.0.0.1/"
+            userid="root"
+            password="s0nic@lake">
+
+            <classpath>
+                <pathelement location="${basedir}/lib/mysql-connector-java-3.1.12-bin.jar"/>
+            </classpath>
+			
+            <transaction>
+                drop database if exists ${context};
+                create database ${context};
+                grant all privileges on ${context}.* to sonic@localhost identified by 'sonic';
+            </transaction>
+        </sql>	
+    </target>
+		
+    <target name="db-init" depends="db-create" description="Prepare baseline database.">
+        <sql driver="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://127.0.0.1/${context}"
+            userid="sonic"
+            password="sonic">
+			
+            <classpath>
+                <pathelement location="${basedir}/lib/mysql-connector-java-3.1.12-bin.jar"/>
+            </classpath>
+
+            <transaction src="${basedir}/sql/ciknow.sql"/>
+        </sql>	
+    </target>
+	
+    <target name="db-update" description="Update database.">
+        <echo>Updating database...</echo>
+        <sql driver="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://127.0.0.1/${context}"
+            userid="sonic"
+            password="sonic">
+			
+            <classpath>
+                <pathelement location="${basedir}/lib/mysql-connector-java-3.1.12-bin.jar"/>
+            </classpath>
+
+            <transaction src="${basedir}/sql/ciknow.update.sql"/>
+        </sql>	
+    </target>
+	
+    <target name="db-delete">
+        <sql driver="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://127.0.0.1/"
+            userid="root"
+            password="s0nic@lake">
+
+            <classpath>
+                <pathelement location="${basedir}/lib/mysql-connector-java-3.1.12-bin.jar"/>
+            </classpath>
+			
+            <transaction>
+                drop database if exists ${context};
+            </transaction>
+        </sql>	
+    </target>	
+				
+	
+    <!-- SERVER -->
+    <target name="create-server" description="Create a new ciknow instance">
+        <copy toDir="${template.temp}" overwrite="true">
+            <fileset dir="${template.server}"/>
+        </copy>
+		
+    	<!-- LAST UPDATE TIMESTAMP -->
+        <replace file="${template.temp}/WEB-INF/classes/ciknow.properties"
+                         token="__build.time__" 
+                         value="${start.timestamp}"/>
+    	
+        <replace file="${template.temp}/oldlogin.jsp"
+                         token="__build.time__" 
+                         value="${start.timestamp}"/>
+			
+    	<!-- DATABASE -->
+        <replace file="${template.temp}/WEB-INF/classes/applicationContext-datasource.xml"
+                 token="_ciknow" value="${context}"/>
+    	
+    	<!-- LOGGING -->
+        <replace file="${template.temp}/WEB-INF/classes/log4j.properties"
+                 token="_ciknow" value="${context}"/>
+        <replace file="${template.temp}/WEB-INF/classes/log4j.properties"
+                 token="log4j.rootLogger=warn, stdout" 
+                 value="log4j.rootLogger=warn, file"/> 
+       	
+    	<!-- WEB APPLICATION CONTEXT -->
+        <replace file="${template.temp}/META-INF/context.xml"
+                 token="_ciknow" value="${context}"/>     
+    	
+    	<!-- SECURITY -->
+        <replace file="${template.temp}/WEB-INF/classes/applicationContext-security.xml"
+                 token="_ciknow" value="${context}"/>       	
+    </target>
+    
+    <!-- CLIENT -->
+    <target name="create-client" description="Create a new ciknow client and merge into server application."> 	
+    	
+        <ant dir="${template.client}" target="package" inheritAll="false"/>
+
+        <copy toDir="${template.temp}">
+            <fileset dir="${template.client}/bin"/>
+        </copy>
+    	
+    	<!-- rename to admin.html -->
+		<copy 
+			file="${template.temp}/index.html" 
+			tofile="${template.temp}/admin.html" 
+			overwrite="true"/>	
+				
+    	<!-- add meta data -->
+		<echo>adding metadata to admin.html...</echo>
+        <java classname="ciknowmgr.util.HtmlUtil" failonerror="true">
+        	<classpath refid="classpath"/>
+        	<arg line="${template.temp}/admin.html"/>
+        </java>
+    </target>    
+</project>

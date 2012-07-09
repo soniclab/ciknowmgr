@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Sample namespace-based configuration
+  -
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+    <global-method-security pre-post-annotations="enabled">
+        <!-- AspectJ pointcut expression that locates our "post" method and applies security that way
+        <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
+        -->
+    </global-method-security>
+
+    <http use-expressions="true">
+    	<intercept-url pattern="/showall.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/404.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/forward.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/install.htm" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/InstData/**" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/docs/**" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/login.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/getusername.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/getpassword.jsp" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/register**" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/recover**" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/ciknowmgr.css" access="permitAll()" requires-channel="https"/>
+    	<intercept-url pattern="/logo.jpg" access="permitAll()" requires-channel="https"/>
+
+        <intercept-url pattern="/**" access="isAuthenticated()" requires-channel="https"/>
+        
+        <form-login login-page="/login.jsp" 
+        			default-target-url="/index.zul" 
+        			always-use-default-target="true" 
+        			authentication-failure-url="/login.jsp?login_error=1"/>
+        <logout logout-success-url="/login.jsp?logout=1"/>
+        <remember-me />
+<!--
+    Uncomment to enable X509 client authentication support
+        <x509 />
+-->
+        <!-- Uncomment to limit the number of sessions a user can have -->
+        <session-management>
+            <concurrency-control max-sessions="1"/>
+        </session-management>
+		
+		<access-denied-handler error-page="/login.jsp"/>
+    </http>
+    
+    <authentication-manager>
+        <authentication-provider ref="daoAuthenticationProvider">
+        </authentication-provider>
+    </authentication-manager>
+
+	<beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="userDetailsService"/>
+	</beans:bean>
+
+	<beans:bean id="userDetailsService" class="ciknowmgr.security.ColfaxUserDetailsService">
+		<beans:property name="userDao" ref="userDao"/>
+	</beans:bean>    
+
+</beans:beans>

@@ -1,0 +1,4 @@
+Username recovery request filled.
+host: ${url}
+username: ${username}
+date: ${date}

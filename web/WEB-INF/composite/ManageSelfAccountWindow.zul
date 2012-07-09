@@ -1,0 +1,30 @@
+<zk>
+	<caption id="caption" label="My Account"/>
+	<grid width="350px">
+		<columns>
+			<column width="150px"/>
+			<column width="200px"/>
+		</columns>
+		<rows>
+			<row>
+				Username<label id="usernameLabel"/>
+			</row>		
+			<row>
+				Old Password<textbox id="oldPasswordBox" type="password" constraint="no empty" width="99%"/>
+			</row>
+			<row>
+				New Password<textbox id="newPasswordBox" type="password" constraint="no empty" width="99%"/>
+			</row>
+			<row>
+				Confirm Password<textbox id="confirmPasswordBox" type="password" constraint="no empty" width="99%"/>
+			</row>
+			<row>
+				Email<textbox id="emailBox" constraint="/.+@.+\.[a-z]+/: e-mail address required" width="99%"/>
+			</row>			
+		</rows>
+	</grid>
+	<toolbar>
+		<toolbarbutton id="updateBtn" label="Update" autodisable="updateBtn, cancelBtn"/>
+		<toolbarbutton id="cancelBtn" label="Cancel" autodisable="updateBtn, cancelBtn"/>
+	</toolbar>	
+</zk>

@@ -1,0 +1,15 @@
+<p align="LEFT" style="font-size:12px; color:#ff6666; font-family:Arial; font-weight:bold;">
+	C-IKNOW has been updated at __build.time__. You can update your project to get the latest features and/or bug fixes.
+</p>
+
+<p align="LEFT" style="font-size:12px; color:#000000; font-family:Arial;">
+	If you have any question about a specific project, please contact project creator or administrator.
+</p>
+
+<p align="LEFT" style="font-size:12px; color:#000000; font-family:Arial;">
+	If you have any question about this management site, please contact <font color="#3366FF"><a href="mailto:yao.gyao@northwestern.edu" target="_blank"><i>York Yao</i></a></font>
+</p>
+
+<p align="LEFT" style="font-size:16px; color:#0000ff; font-family: courier new,courier,monospace; font-weight:bold;">
+	Please double click to visit specific C-IKNOW project.
+</p>

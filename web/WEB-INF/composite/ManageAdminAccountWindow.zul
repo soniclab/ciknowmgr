@@ -1,0 +1,43 @@
+<zk>
+	<caption id="caption" label="Manage Accounts"/>
+	<hbox width="425px">
+		<listbox id="accountsBox" width="150px" rows="20" emptyMessage="No User Accounts"/>
+		
+		<grid id="detailsBox">
+			<columns>
+				<column width="75px"/>
+				<column width="200px"/>
+			</columns>
+			<rows>
+				<row>
+					Username<label id="usernameLabel"/>
+				</row>		
+				<row>
+					Password<textbox id="passwordBox" type="password" constraint="no empty" width="99%"/>
+				</row>
+				<row>
+					Email
+					<textbox id="emailBox" width="99%" 
+							value="please-provide-email@required.com" 
+							constraint="/.+@.+\.[a-z]+/: e-mail address required"/>
+				</row>
+				<row>
+					Enabled<checkbox id="enabledBox"/>
+				</row>
+				<row valign="top">
+					Projects
+					<listbox id="projectsBox" 
+							width="100%" rows="10" 
+							emptyMessage="No User Projects"/>
+				</row>					
+			</rows>
+		</grid>
+	</hbox>
+
+	<toolbar>
+		<toolbarbutton id="createBtn" label="Create" autodisable="createBtn, updateBtn, deleteBtn, closeBtn"/>
+		<toolbarbutton id="updateBtn" label="Update" autodisable="createBtn, updateBtn, deleteBtn, closeBtn"/>
+		<toolbarbutton id="deleteBtn" label="Delete" autodisable="createBtn, updateBtn, deleteBtn, closeBtn"/>
+		<toolbarbutton id="closeBtn" label="Close" autodisable="createBtn, updateBtn, deleteBtn, closeBtn"/>
+	</toolbar>	
+</zk>

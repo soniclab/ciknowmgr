@@ -1,0 +1,21 @@
+<zk>
+	<caption id="caption" label="Copy Project"/>
+	<grid vflex="min" width="600px">
+		<columns>
+			<column width="80px"/>
+			<column width="520px"/>
+		</columns>
+		<rows>
+			<row>
+				Name<label id="nameLabel" width="100%"/>
+			</row>		
+			<row>
+				New Name<textbox id="newNameBox" constraint="no empty" width="100%"/>
+			</row>
+		</rows>
+	</grid>
+	<toolbar>
+		<toolbarbutton id="copyBtn" label="Copy" autodisable="copyBtn, cancelBtn"/>
+		<toolbarbutton id="cancelBtn" label="Cancel" autodisable="copyBtn, cancelBtn"/>
+	</toolbar>	
+</zk>

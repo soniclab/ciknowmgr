@@ -1,0 +1,5 @@
+A new user registered at ${url}.
+username: ${username}
+date: ${date}
+
+This is just a notification, you don't need to do anything.

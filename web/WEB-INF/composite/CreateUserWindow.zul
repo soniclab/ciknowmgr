@@ -1,0 +1,27 @@
+<zk>
+	<caption id="caption" label="Create New User"/>
+	<grid width="350px">
+		<columns>
+			<column width="150px"/>
+			<column width="200px"/>
+		</columns>
+		<rows>
+			<row>
+				Username<textbox id="usernameBox" constraint="no empty" width="99%"/>
+			</row>		
+			<row>
+				Password<textbox id="passwordBox" type="password" constraint="no empty" width="99%"/>
+			</row>
+			<row>
+				Confirm Password<textbox id="confirmPasswordBox" type="password" constraint="no empty" width="99%"/>
+			</row>
+			<row>
+				Email<textbox id="emailBox" constraint="/.+@.+\.[a-z]+/: e-mail address required" width="99%"/>
+			</row>			
+		</rows>
+	</grid>
+	<toolbar>
+		<toolbarbutton id="saveBtn" label="Save" autodisable="saveBtn, cancelBtn"/>
+		<toolbarbutton id="cancelBtn" label="Cancel" autodisable="saveBtn, cancelBtn"/>
+	</toolbar>	
+</zk>

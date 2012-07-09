@@ -1,0 +1,137 @@
+<?page title="C-IKNOW Manager" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <style>
+        body{
+            padding: 0 0;
+        }
+        
+        .editInstructionWindow{
+            width: 800px;
+            height: 500px;
+        } 
+        
+	/* project banner */
+	.projectBanner {
+		background-color:#333399;	
+	}
+	.projectBanner .projectTitle {
+		color:white; 
+		font-weight:normal; 
+		font-size:36px; 
+		text-shadow: 1px 2px #043A6B;	
+	}
+	.projectBanner .projectDescription{
+		color:#679fd2; 
+		font-size: 14px; 
+		font-style: italic;
+	}
+	.projectBanner .username{
+		color: white;
+		font-style: italic;
+		margin: 5px;
+	}
+	
+	/* project button bar */
+	.projectBar {
+		background-color:#6699FF;	
+	}
+	.projectBar button {
+		background:none;
+		border: none;
+	    border-right: 1px solid white;
+	    font-size: 12px;
+	    font-weight: bold;
+	    color: white;
+	    cursor: pointer;
+	    height: 24px;
+	}
+	.projectBar button.last {
+	  	border-right: none;
+	}	  
+	
+	/* navigation buttons at the South region */
+	.bottombtn {
+	  	font-size: 16px; 
+	}
+	.batchMode{
+		color:white; 
+		font-style:italic; 
+		font-weight: bold
+	}		             
+    </style>
+    <borderlayout id="stage" apply="ciknowmgr.zk.ManagerController" width="100%">
+    	<west width="5%" border="none">
+    		<div style="background:#dddddd;" width="100%" height="100%"/>
+    	</west>
+    	
+    	<center border="none">
+    		<borderlayout>
+		        <north style="background:#333399" border="none">
+		            <box width="100%" align="center">
+		                <hbox hflex="1" sclass="projectBanner">
+		                    <vbox hflex="1" align="left">
+		                        <label value="C-IKNOW Manager" sclass="projectTitle"/>
+		                        <label value="Create and manage your C-IKNOW projects" sclass="projectDescription"/>										
+		                    </vbox>
+		                    <label id="usernameLabel" sclass="username"/>		
+		                </hbox>
+    					<hbox id="projectBar" sclass="projectBar"
+    						align="center" width="100%" height="28px">
+    						<button id="createBtn" label="Create New Project"/>	
+    						<button id="editBtn" label="Edit"/>
+    						<button id="manageBtn" label="Manage Account" sclass="last"/>    						
+    						
+    						<hbox hflex="1" pack="right">
+		                            <button id="logoutBtn" label="Logout" sclass="last"/>		
+		                            <button id="helpBtn" label="?" popup="helpPopup, position=after_end" visible="false"/>
+    						</hbox>
+    					</hbox>		                			
+		            </box>
+		        </north>
+				
+		        <center border="none" autoscroll="true" flex="true">
+		        	<div> <!-- this div is to make autoscroll available -->
+		        		<vbox align="center" width="100%" height="100%"> <!-- this vbox is to make center alignment -->
+				            <vbox id="centerBox" width="98%">	<!-- this vbox is to hold the main content -->
+				                <html id="instruction"/>
+								
+				                <listbox id="projectList" width="100%" rows="12">
+				                    <listhead id="projectHeaders" sizable="true">
+				                        <listheader label="Name" width="100px"/>
+				                        <listheader label="Description"/>
+				                        <listheader label="Creator" width="100px"/>								
+										<listheader label="Details" width="75px"/>
+				                    </listhead>
+				                </listbox>			
+				            </vbox>			        		
+		        		</vbox>	        	
+		        	</div>
+		        </center>
+				
+		        <south border="none" style="background:#dddddd">
+		            <hlayout>	
+		                <button id="restartBtn" label="Restart" disabled="true" sclass="bottombtn"/>
+		                <button id="updateBtn" label="Update" disabled="true" sclass="bottombtn"/>
+		                <button id="copyBtn" label="Copy" disabled="true" sclass="bottombtn"/>
+		                <button id="enableBtn" label="Enable" disabled="true" sclass="bottombtn"/>	
+		                <button id="disableBtn" label="Disable" disabled="true" sclass="bottombtn"/>
+		                <button id="cleanBtn" label="Clean" disabled="true" sclass="bottombtn"/>
+		                <button id="deleteBtn" label="Delete" disabled="true" sclass="bottombtn"/>	
+		                <checkbox id="batchBox" label="Enter Batch Mode" sclass="bachMode"/>					
+		            </hlayout>							
+		        </south>    		
+    		</borderlayout>    	
+    	</center>    	
+        
+    	<east width="5%" border="none">
+    		<div style="background:#dddddd;" width="100%" height="100%"/>
+    	</east>        		
+    </borderlayout>	
+	
+    <popup id="helpPopup" width="400px" height="300px">
+        <vbox style="" width="100%" height="100%">
+            This is help information.
+            <a href="http://www.google.com" target="_blank">More</a>		
+        </vbox>
+    </popup>
+</zk>

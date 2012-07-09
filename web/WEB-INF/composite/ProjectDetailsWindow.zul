@@ -1,0 +1,36 @@
+<zk>
+	<caption id="caption" label="Project Details"/>
+	<vlayout>
+		<grid height="500px" width="620px">
+			<columns>
+				<column width="100px"/>
+				<column width="500px"/>
+			</columns>
+			<rows>
+				<row>
+					Name<label id="nameLabel"/>
+				</row>
+				<row id="descriptionRow">
+					Description(*)<label id="descriptionLabel"/>
+				</row>						
+				<row>
+					Creator<label id="creatorLabel"/>
+				</row>
+				<row>
+					Logs
+					<grid id="logGrid" vflex="1" hflex="1">
+						<columns>
+							<column label="Action"/>
+							<column label="Actor"/>
+							<column label="Timestamp"/>
+						</columns>
+						<rows id="logRows"/>
+					</grid>
+				</row>		
+			</rows>
+		</grid>	
+		<label value="* Project description can be updated by double click" style="color:green; font-style:italic"/>	
+	</vlayout>
+
+	
+</zk>

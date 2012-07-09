@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"     
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- remove default-autowire="byName" from <beans> tag because it caused problem for Quartz Scheduler -->
+
+    <!---															-->
+	<!--- 					HIBERNATE DAO      						-->
+	<!---															-->      
+    
+    <bean id="projectDao" parent="hibernateTxTemplate" lazy-init="false">
+    	<property name="proxyInterfaces">
+    		<list>
+    			<value>ciknowmgr.dao.ProjectDao</value>
+    		</list>
+    	</property>
+    	<property name="target">
+    		<bean class="ciknowmgr.dao.hibernate.ProjectHibernateDao" parent="hibernateDaoTemplate"/>
+    	</property>
+    </bean>
+
+    <bean id="userDao" parent="hibernateTxTemplate" lazy-init="false">
+    	<property name="proxyInterfaces">
+    		<list>
+    			<value>ciknowmgr.dao.UserDao</value>
+    		</list>
+    	</property>
+    	<property name="target">
+    		<bean class="ciknowmgr.dao.hibernate.UserHibernateDao" parent="hibernateDaoTemplate"/>
+    	</property>
+    </bean> 
+    	   
+    <bean id="roleDao" parent="hibernateTxTemplate" lazy-init="false">
+    	<property name="proxyInterfaces">
+    		<list>
+    			<value>ciknowmgr.dao.RoleDao</value>
+    		</list>
+    	</property>
+    	<property name="target">
+    		<bean class="ciknowmgr.dao.hibernate.RoleHibernateDao" parent="hibernateDaoTemplate"/>
+    	</property>
+    </bean> 
+    
+	<!---															-->
+	<!--- 					TEMPLATE	       						-->
+	<!---															-->
+	<bean id="hibernateDaoTemplate" abstract="true">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+    <bean id="hibernateTxTemplate" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

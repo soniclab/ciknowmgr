@@ -1,0 +1,6 @@
+You have just registered at: ${url}.
+username: ${username}
+password: ${password}
+date: ${date}
+
+This is just a notification, you don't need to do anything.

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="ciknowmgr.domain.Project" table="projects">
+        <id name="id" type="java.lang.Long">
+            <column name="project_id" />
+            <generator class="native"/>
+        </id>
+        <version name="version" type="java.lang.Long">
+            <column name="version" not-null="true"/>
+        </version>
+        
+        <property name="name" type="string">
+            <column name="name" length="128" not-null="true"/>
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="1024" not-null="true"/>
+        </property>
+        <property name="url" type="string">
+            <column name="url" length="1024"/>
+        </property>        
+        <property name="creator" type="string">
+            <column name="creator" length="128" not-null="true"/>
+        </property>
+        <property name="enabled" type="boolean">
+            <column name="enabled" not-null="true"/>
+        </property>        
+        
+        
+        <set name="logs" table="project_logs" order-by="timeStamp desc" lazy="false">
+        	<key column="project_id"/>
+        	<composite-element class="ciknowmgr.domain.ProjectLog">
+        		<property name="action" not-null="true"/>
+        		<property name="user" not-null="true"/>
+        		<property name="comment"/>
+        		<property name="timeStamp" not-null="true"/>
+        	</composite-element>
+        </set>   
+      
+    </class>
+</hibernate-mapping>

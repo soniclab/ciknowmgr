@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	
+	<display-name>C-IKNOW Manager</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/classes/applicationContext-datasource.xml
+			/WEB-INF/classes/applicationContext-dao.xml
+			/WEB-INF/classes/applicationContext-job.xml
+			/WEB-INF/classes/applicationContext-general.xml
+			/WEB-INF/classes/applicationContext-security.xml
+		</param-value>
+	</context-param>
+
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>cas.root</param-value>
+    </context-param>
+    
+    
+    <filter>
+        <filter-name>dummyFilter</filter-name>
+        <filter-class>ciknowmgr.web.DummyFilter</filter-class>
+    </filter>
+    
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+    <filter>
+       <filter-name>CAS Single Sign Out Filter</filter-name>
+       <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+    </filter>
+    
+    
+	<filter-mapping>
+		<filter-name>dummyFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+    <filter-mapping>
+       <filter-name>CAS Single Sign Out Filter</filter-name>
+       <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+        
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+    <!--
+      - Publishes events for session creation and destruction through the application
+      - context. Optional unless concurrent session control is being used.
+      -->
+    <listener>
+      <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+	
+    <listener>
+        <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    </listener>
+    	
+	<listener>
+    	<listener-class>ciknowmgr.web.ShutDownHook</listener-class>
+  	</listener>
+	<listener>
+		<description>
+		Used to cleanup when a session is destroyed</description>
+		<display-name>ZK Session cleaner</display-name>
+		<listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
+	</listener>
+
+	
+	<servlet>
+		<servlet-name>registrationServlet</servlet-name>
+		<servlet-class>ciknowmgr.web.RegistrationServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>recoverUsernameServlet</servlet-name>
+		<servlet-class>ciknowmgr.web.RecoverUsernameServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>		
+	
+	<servlet>
+		<servlet-name>recoverPasswordServlet</servlet-name>
+		<servlet-class>ciknowmgr.web.RecoverPasswordServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet>
+		<description>
+		The ZK loader for ZUML pages</description>
+		<servlet-name>zkLoader</servlet-name>
+		<servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
+		<init-param>
+			<param-name>update-uri</param-name>
+			<param-value>/zkau</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<description>
+		The asynchronous update engine for ZK</description>
+		<servlet-name>auEngine</servlet-name>
+		<servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
+	</servlet>	
+	 
+	<servlet-mapping>
+		<servlet-name>registrationServlet</servlet-name>
+		<url-pattern>/register</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet-mapping>
+		<servlet-name>recoverUsernameServlet</servlet-name>
+		<url-pattern>/recoverUsername</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>recoverPasswordServlet</servlet-name>
+		<url-pattern>/recoverPassword</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>zkLoader</servlet-name>
+		<url-pattern>*.zul</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>zkLoader</servlet-name>
+		<url-pattern>*.zhtml</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>auEngine</servlet-name>
+		<url-pattern>/zkau/*</url-pattern>
+	</servlet-mapping>
+	
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
+    <error-page>
+        <error-code>403</error-code>
+        <location>/casfailed.jsp</location>
+    </error-page>
+    		
+	<welcome-file-list>
+		<welcome-file>index.zul</welcome-file>
+	</welcome-file-list>
+	
+</web-app>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="CIKNOW Manager" basedir="." default="deploy-ciknowmgr-assembler">
+	<property file="build.properties"/>
+	<property environment="env"/>
+
+	<property name="app.name"      value="${context}"/>
+	<property name="app.path"      value="/${app.name}"/>
+	<property name="app.version"   value="1.0"/>
+	<property name="build.dir"    value="${basedir}/build"/>
+	<property name="dist.dir"     value="${basedir}/dist"/>
+	<property name="src.dir"      value="${basedir}/src"/>
+	<property name="web.dir"      value="${basedir}/web"/>
+
+	<property name="manager.url" value="http://127.0.0.1:8080/manager"/>
+	<property name="manager.username" value="admin"/>
+	<property name="manager.password" value="northwestern"/>
+		
+	<path id="compile.classpath">
+		<fileset dir="${env.CATALINA_HOME}/bin">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement location="${env.CATALINA_HOME}/lib"/>
+		<fileset dir="${env.CATALINA_HOME}/lib">
+			<include name="**/*.jar"/>
+		</fileset>
+
+		<fileset dir="${web.dir}/WEB-INF/lib">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="classpath">
+		<path refid="compile.classpath"/>
+		<pathelement location="${build.dir}/WEB-INF/classes"/>
+	</path>
+			
+	<taskdef resource="org/apache/catalina/ant/catalina.tasks"
+		classpathref="compile.classpath"/>
+
+	<property name="compile.debug"       value="true"/>
+	<property name="compile.deprecation" value="false"/>
+	<property name="compile.optimize"    value="true"/>
+
+	<tstamp>
+		<format property="start.timestamp" pattern="MM/dd/yyyy HH:mm:ss" />
+	</tstamp>
+
+	<target name="clean" description="Delete old build and dist directories">
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>	
+	</target>
+	
+	<target name="prepare">
+		<tstamp/>
+		<mkdir  dir="${dist.dir}"/>
+		<mkdir  dir="${build.dir}"/>
+		<copy todir="${build.dir}" overwrite="true">
+			<fileset dir="${web.dir}"/>
+		</copy>
+		
+		<replace file="${build.dir}/WEB-INF/classes/instruction.txt"
+			token="__build.time__" 
+			value="${start.timestamp}"/>
+		
+		<replace file="${build.dir}/WEB-INF/classes/ciknowmgr.properties"
+			token="__build.time__" 
+			value="${start.timestamp}"/>
+		
+		<replace file="${build.dir}/WEB-INF/classes/log4j.properties"
+			token="log4j.rootLogger=info, stdout" 
+			value="log4j.rootLogger=info, file"/>
+	</target>
+
+	<target name="compile" depends="prepare" 
+		description="Compile Java sources and make web application">
+		<javac srcdir="${src.dir}"
+			destdir="${build.dir}/WEB-INF/classes"
+            debug="${compile.debug}"
+      		deprecation="${compile.deprecation}"
+         	optimize="${compile.optimize}"
+			classpathref="compile.classpath">
+		</javac>
+
+		<copy  todir="${build.dir}/WEB-INF/classes">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>	
+	</target>
+
+	<target name="deploy-ciknowmgr-assembler" depends="compile" 
+		description="Build web application">	    		
+		<copy toDir="${ciknowmgr.assembler.dir}/build">
+			<fileset dir="${build.dir}" excludes="**/*Test.class"/>
+		</copy>		
+	</target>	
+
+	<target name="deploy-ciknowmgr-assembler-with-ssl" 
+		description="Build web application">
+		<copy 
+			file="${web.dir}/WEB-INF/classes/applicationContext-security.xml" 
+			tofile="${web.dir}/WEB-INF/classes/applicationContext-security.http.xml" 
+			overwrite="true"/>
+		<copy 
+			file="${web.dir}/WEB-INF/classes/applicationContext-security.https.xml" 
+			tofile="${web.dir}/WEB-INF/classes/applicationContext-security.xml" 
+			overwrite="true"/>		
+
+		<copy 
+			file="${web.dir}/WEB-INF/flex/remoting-config.xml" 
+			tofile="${web.dir}/WEB-INF/flex/remoting-config.http.xml" 
+			overwrite="true"/>
+		<copy 
+			file="${web.dir}/WEB-INF/flex/remoting-config.https.xml" 
+			tofile="${web.dir}/WEB-INF/flex/remoting-config.xml" 
+			overwrite="true"/>	
+		
+		<antcall target="deploy-ciknowmgr-assembler"/>
+		
+		<move 
+			file="${web.dir}/WEB-INF/classes/applicationContext-security.http.xml" 
+			tofile="${web.dir}/WEB-INF/classes/applicationContext-security.xml" 
+			overwrite="true"/>	
+
+		<move 
+			file="${web.dir}/WEB-INF/flex/remoting-config.http.xml" 
+			tofile="${web.dir}/WEB-INF/flex/remoting-config.xml" 
+			overwrite="true"/>	
+	</target>				
+	
+
+    <target name="local_restart" description="--> restart project">
+		<reload url="${manager.url}"
+	       username="${manager.username}"
+	       password="${manager.password}"
+	           path="/${context}"/>
+    </target>    	
+	
+
+	                	
+	<target name="check.instruction">
+		<available file="${deploy}/WEB-INF/classes/instruction.txt" property="instruction.present"/>
+	</target>
+	
+	<target name="preserve-instruction" depends="check.instruction" if="instruction.present">
+		<copy toDir="${build.dir}/WEB-INF/classes" file="${deploy}/WEB-INF/classes/instruction.txt" overwrite="true"/>   
+	</target>
+</project>

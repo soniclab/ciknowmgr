@@ -1,0 +1,6 @@
+You have just created a new C-IKNOW project instance.
+url: ${url}
+username: admin
+default admin password: admin
+
+Please change the administrator password after the first login.

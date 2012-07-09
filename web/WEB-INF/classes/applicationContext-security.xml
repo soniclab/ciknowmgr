@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Sample namespace-based configuration
+  -
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+    <global-method-security pre-post-annotations="enabled">
+
+    </global-method-security>
+
+    <http use-expressions="true" entry-point-ref="casProcessingFilterEntryPoint">
+    	<!-- very secure: administrator(s) only -->
+        <intercept-url pattern="/secure/extreme/**" access="hasRole('ROLE_SUPERVISOR')"/>
+        
+        <!-- secure: authentication required -->
+        <intercept-url pattern="/secure/**" access="isAuthenticated()"/>                 
+        <intercept-url pattern="/index.zul" access="isAuthenticated()"/>
+        
+        <!-- optional: these are opaque to client -->
+    	<intercept-url pattern="/zkau/*" access="permitAll()"/>      
+    	
+    	<!-- everything else: open to public -->
+        <intercept-url pattern="/**" access="permitAll()"/>
+        			
+		<custom-filter ref="casAuthenticationFilter" after="CAS_FILTER"/>
+
+		<!--   			
+        <logout logout-success-url="/cas-logout.jsp"/>
+		-->
+		
+		<logout success-handler-ref="logoutSuccessHandler"/>
+		
+        <session-management>
+            <concurrency-control max-sessions="1"/>
+        </session-management>
+		
+		<access-denied-handler error-page="/accessDenied.jsp"/>
+    </http>
+    
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="casAuthenticationProvider"/>
+    </authentication-manager>
+    
+    
+    <beans:bean id="casProcessingFilterEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+        <beans:property name="loginUrl" value="https://localhost:8443/cas/login"/>
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+    </beans:bean>
+
+    <beans:bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="authenticationFailureHandler">
+            <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                <beans:property name="defaultFailureUrl" value="/casfailed.jsp"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="authenticationSuccessHandler">
+            <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+                <beans:property name="defaultTargetUrl" value="/index.zul"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+        <beans:property name="proxyReceptorUrl" value="/secure/receptor" />
+    </beans:bean>
+    
+    <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userDetailsService"/>
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+        <beans:property name="ticketValidator">
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                <beans:constructor-arg index="0" value="https://localhost:8443/cas" />
+                <beans:property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
+                <beans:property name="proxyCallbackUrl" value="https://localhost:8443/ciknowmgr/secure/receptor" />
+            </beans:bean>
+        </beans:property>
+        <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
+    </beans:bean>    
+
+	<beans:bean id="userDetailsService" class="ciknowmgr.security.ColfaxUserDetailsService">
+		<beans:property name="userDao" ref="userDao"/>
+	</beans:bean>  
+	
+    <beans:bean id="proxyGrantingTicketStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
+
+    <beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+        <beans:property name="service" value="https://localhost:8443/ciknowmgr/j_spring_cas_security_check"/>
+        <beans:property name="sendRenew" value="false"/>
+    </beans:bean>
+    
+    
+	<beans:bean id="logoutSuccessHandler" class="ciknowmgr.security.CIKNOWMGRLogoutSuccessHandler"> 
+	</beans:bean>    
+</beans:beans>

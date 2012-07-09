@@ -1,0 +1,7 @@
+One of your projects has been disabled because there were no user activities within 2 weeks.
+Name: ${projectName}
+
+Your project and data were saved. You can enable your project from CIKNOW Manager: 
+${ciknowmgrUrl}
+
+You can also access your project directly as usual. Our server will enable your project automatically in about 10~15 seconds.
