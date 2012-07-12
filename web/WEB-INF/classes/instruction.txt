@@ -1,5 +1,5 @@
 <p align="LEFT" style="font-size:12px; color:#ff6666; font-family:Arial; font-weight:bold;">
-	C-IKNOW has been updated at __build.time__. You can update your project to get the latest features and/or bug fixes.
+	Last Updated Time: __build.time__.
 </p>
 
 <p align="LEFT" style="font-size:12px; color:#000000; font-family:Arial;">
