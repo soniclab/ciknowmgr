@@ -41,10 +41,6 @@
 	<property name="compile.deprecation" value="false"/>
 	<property name="compile.optimize"    value="true"/>
 
-	<tstamp>
-		<format property="start.timestamp" pattern="MM/dd/yyyy HH:mm:ss" />
-	</tstamp>
-
 	<target name="clean" description="Delete old build and dist directories">
 		<delete dir="${build.dir}"/>
 		<delete dir="${dist.dir}"/>	
@@ -57,14 +53,6 @@
 		<copy todir="${build.dir}" overwrite="true">
 			<fileset dir="${web.dir}"/>
 		</copy>
-		
-		<replace file="${build.dir}/WEB-INF/classes/instruction.txt"
-			token="__build.time__" 
-			value="${start.timestamp}"/>
-		
-		<replace file="${build.dir}/WEB-INF/classes/ciknowmgr.properties"
-			token="__build.time__" 
-			value="${start.timestamp}"/>
 		
 		<replace file="${build.dir}/WEB-INF/classes/log4j.properties"
 			token="log4j.rootLogger=info, stdout" 
@@ -135,7 +123,7 @@
     </target>    	
 	
 
-	                	
+	<!--                	
 	<target name="check.instruction">
 		<available file="${deploy}/WEB-INF/classes/instruction.txt" property="instruction.present"/>
 	</target>
@@ -143,4 +131,5 @@
 	<target name="preserve-instruction" depends="check.instruction" if="instruction.present">
 		<copy toDir="${build.dir}/WEB-INF/classes" file="${deploy}/WEB-INF/classes/instruction.txt" overwrite="true"/>   
 	</target>
+	-->
 </project>
