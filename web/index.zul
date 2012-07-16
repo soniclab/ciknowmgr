@@ -98,10 +98,10 @@
 								
 				                <listbox id="projectList" width="100%" rows="12">
 				                    <listhead id="projectHeaders" sizable="true">
-				                        <listheader label="Name" width="100px"/>
-				                        <listheader label="Description"/>
-				                        <listheader label="Creator" width="100px"/>								
-										<listheader label="Details" width="75px"/>
+				                        <listheader label="Name" width="100px" sort="auto"/>
+				                        <listheader label="Description" sort="auto"/>
+				                        <listheader label="Creator" width="100px" sort="auto"/>								
+										<listheader label="Details" width="75px" sort="auto"/>
 				                    </listhead>
 				                </listbox>	
 				            </vbox>		
