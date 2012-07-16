@@ -93,7 +93,7 @@
 		        	<div> <!-- this div is to make autoscroll available -->
 		        		<hbox width="100%" height="100%">
 							<space width="10px"/>
-				            <vbox hflex="1">
+				            <vbox id="centerBox" hflex="1">
 				                <html id="instruction"/>
 								
 				                <listbox id="projectList" width="100%" rows="12">
