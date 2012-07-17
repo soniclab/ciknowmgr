@@ -93,15 +93,15 @@
 		        	<div> <!-- this div is to make autoscroll available -->
 		        		<hbox width="100%" height="100%">
 							<space width="10px"/>
-				            <vbox id="centerBox" hflex="1">
+				            <vbox id="centerBox" hflex="1"> <!-- this vbox is required as parent for popup windows -->
 				                <html id="instruction"/>
 								
 				                <listbox id="projectList" width="100%" rows="12">
 				                    <listhead id="projectHeaders" sizable="true">
-				                        <listheader label="Name" width="100px" sort="auto"/>
-				                        <listheader label="Description" sort="auto"/>
-				                        <listheader label="Creator" width="100px" sort="auto"/>								
-										<listheader label="Details" width="75px" sort="auto"/>
+				                        <listheader label="Name" width="100px" sortDirection="ascending" sort="auto(name)"/>
+				                        <listheader label="Description" sort="auto(description)"/>
+				                        <listheader label="Creator" width="100px" sort="auto(creator)"/>								
+										<listheader label="Details" width="75px"/>
 				                    </listhead>
 				                </listbox>	
 				            </vbox>		
