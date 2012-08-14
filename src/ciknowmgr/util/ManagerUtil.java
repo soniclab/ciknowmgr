@@ -114,7 +114,7 @@ public class ManagerUtil {
 		projectDao.save(project);
 		
 		// update user
-		login.update(userDao.findById(login.getId()));
+		login.update(userDao.loadById(login.getId()));
 		login.getProjects().add(project);
 		userDao.save(login);
 		
@@ -161,7 +161,7 @@ public class ManagerUtil {
 		p.getLogs().add(log);				
 		projectDao.save(p);
 		
-		login.update(userDao.findById(login.getId()));
+		login.update(userDao.loadById(login.getId()));
 		login.getProjects().add(p);
 		userDao.save(login);
 	}
@@ -177,7 +177,7 @@ public class ManagerUtil {
 		if (project == null) throw new Exception("The project to be deleted does not exist.");
 		
 		// check if project is shared
-		List<User> users = userDao.getAll();
+		List<User> users = userDao.loadAll();
 		StringBuilder sb = new StringBuilder();
 		for (User user : users){
 			if (user.getUsername().equals(login.getUsername())) continue;
@@ -199,9 +199,9 @@ public class ManagerUtil {
 				user.getProjects().remove(project);
 			}
 			userDao.save(users);
-			login.update(userDao.findById(login.getId()));
+			login.update(userDao.loadById(login.getId()));
 		} else {
-			login.update(userDao.findById(login.getId()));
+			login.update(userDao.loadById(login.getId()));
 			login.getProjects().remove(project);
 			userDao.save(login);
 		}

@@ -14,11 +14,12 @@ public interface UserDao {
 	public void deleteAll();
 	
 	public User findById(Long id);
-	//public User loadById(Long id);
-	//public User findProxyById(Long id);
+	public User loadById(Long id);
+	public User findProxyById(Long id);
 	public User findByUsername(String username);
-	//public User loadByUsername(String username);
+	public User loadByUsername(String username);
 	public User findByEmail(String email);
 	public List<User> getUsersByProject(Project project);
 	public List<User> getAll();
+	public List<User> loadAll();
 }

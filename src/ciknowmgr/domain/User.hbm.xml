@@ -68,13 +68,13 @@
             <column name="enabled" not-null="true"/>
         </property>
         
-        <map name="attributes" table="user_attributes" lazy="false">
+        <map name="attributes" table="user_attributes" lazy="true">
             <key column="user_id"/>
             <map-key type="string" column="attr_key"/>
             <element type="string" column="attr_value" not-null="true"/>
         </map>
         
-        <set name="roles" table="user_role" lazy="false">
+        <set name="roles" table="user_role" lazy="true">
             <key>
                 <column name="user_id" not-null="true"/>
             </key>
@@ -83,7 +83,7 @@
             </many-to-many>
         </set> 
         
-        <set name="projects" table="user_project" lazy="false">
+        <set name="projects" table="user_project" lazy="true">
             <key>
                 <column name="user_id" not-null="true"/>
             </key>

@@ -69,7 +69,7 @@ public class CIKNOWDetector {
 		Connection con = null;
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.WEEK_OF_MONTH, -2);
-		List<User> allUsers = userDao.getAll();
+		List<User> allUsers = userDao.loadAll();
 		
 		List<Project> projects = projectDao.getAll();
 		for (Project project : projects){

@@ -25,7 +25,7 @@ public class ColfaxUserDetailsService implements UserDetailsService{
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 		if (username == null || username.equals("")) throw new UsernameNotFoundException("User not found.");
-		User user = userDao.findByUsername(username);
+		User user = userDao.loadByUsername(username);
 		if (user == null || !user.getEnabled()) throw new UsernameNotFoundException("User " + username + " not found or disabled.");
 		
 		ColfaxUserDetails userDetails = new ColfaxUserDetails(user);

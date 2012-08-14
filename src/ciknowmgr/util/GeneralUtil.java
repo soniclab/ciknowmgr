@@ -195,7 +195,7 @@ public class GeneralUtil {
 	@SuppressWarnings("rawtypes")
 	public static void notifyAdmin(final String subject, final Map data, final String templateFileName){
     	UserDao userDao = (UserDao)Beans.getBean("userDao");
-		List<User> users = userDao.getAll();		
+		List<User> users = userDao.loadAll();		
 		for (User u : users){
 			if (u.isAdmin()){
 				String adminEmail = u.getEmail();

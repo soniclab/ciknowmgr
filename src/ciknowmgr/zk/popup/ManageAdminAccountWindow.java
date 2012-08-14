@@ -105,7 +105,7 @@ public class ManageAdminAccountWindow extends Window {
 			// populate user info
 			String username = (String)selections.iterator().next();
 			logger.info("Selected user: " + username);
-			User user = userDao.findByUsername(username);
+			User user = userDao.loadByUsername(username);
 			logger.debug(user);
 			usernameLabel.setValue(user.getUsername());
 			passwordBox.setValue(user.getPassword());
@@ -150,7 +150,7 @@ public class ManageAdminAccountWindow extends Window {
 		} else {			
 			// get selected user
 			String username = (String)selections.iterator().next();			
-			User user = userDao.findByUsername(username);
+			User user = userDao.loadByUsername(username);
 			
 			// update user info
 			user.setPassword(passwordBox.getValue().trim());
@@ -218,7 +218,7 @@ public class ManageAdminAccountWindow extends Window {
 		} else {			
 			// get selected user
 			String username = (String)selections.iterator().next();			
-			final User user = userDao.findByUsername(username);
+			final User user = userDao.loadByUsername(username);
 			List<Project> allProjects = projectDao.getAll();
 			List<Project> userCreatedProjects = new ArrayList<Project>();
 			for (Project project : allProjects){
